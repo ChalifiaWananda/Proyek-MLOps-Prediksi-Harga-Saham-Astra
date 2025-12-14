@@ -119,6 +119,7 @@ Build Docker image:
 ```bash
 docker build -t mlops-astra .
 ```
+Model API dikemas menggunakan Docker untuk memastikan konsistensi environment dan kemudahan deployment.
 
 Run container:
 
