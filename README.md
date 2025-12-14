@@ -1,47 +1,62 @@
 # 📈 Proyek MLOps: Prediksi Harga Saham Astra (ASII.JK)
 
-[![GitHub](https://img.shields.io/badge/GitHub-code-blue?style=flat\&logo=github\&logoColor=white)](https://github.com/prsdm/mlops-project)
+Selamat datang di **Proyek Prediksi Harga Saham Astra (ASII.JK)**.
+Proyek ini bertujuan untuk membangun **pipeline MLOps end-to-end** untuk memprediksi harga saham menggunakan data historis.
 
-Selamat datang di **Proyek Prediksi Harga Saham Astra**. Proyek ini bertujuan untuk membangun **pipeline MLOps end-to-end** untuk memprediksi harga penutupan saham **PT Astra International Tbk (ASII.JK)** menggunakan data historis.
-
-Fokus utama proyek ini adalah pada **implementasi workflow MLOps**, bukan pada kompleksitas model machine learning.
+🔹 Fokus utama proyek ini adalah **implementasi workflow MLOps**, meliputi deployment, CI/CD, dan monitoring, **bukan kompleksitas model machine learning**.
 
 ---
 
 ## 🎯 Tujuan Proyek
 
-* Menerapkan workflow MLOps secara lengkap
+* Menerapkan alur kerja MLOps secara end-to-end
 * Mengelola data, model, dan eksperimen secara terstruktur
-* Melakukan deployment model ke dalam bentuk API
-* Menerapkan CI/CD dan monitoring sistem ML
+* Menyediakan model dalam bentuk **REST API**
+* Menerapkan **CI/CD menggunakan GitHub Actions**
+* Menerapkan **monitoring dasar melalui logging**
 
 ---
 
-## 🏗️ Diagram Arsitektur
-
-Diagram berikut menggambarkan alur sistem dari data ingestion hingga deployment model:
+## 🏗️ Arsitektur Sistem
 
 ```
-Sumber Data (Yahoo Finance)
+Data Historis Saham
         ↓
-Data Ingestion
+Preprocessing Data
         ↓
-Data Preprocessing
+Training Model & Tracking (MLflow)
         ↓
-Model Training & Experiment Tracking (MLflow)
-        ↓
-Model Registry
+Model Terbaik (best_model.pkl)
         ↓
 API Inference (FastAPI)
         ↓
-Docker & Deployment
+Docker Container
+        ↓
+CI/CD (GitHub Actions)
         ↓
 Monitoring & Logging
 ```
 
 ---
 
-## 🚀 Cara Menjalankan Proyek
+## 📂 Struktur Repository
+
+```
+.
+├── data/
+├── models/
+│   └── best_model.pkl
+├── src/
+│   └── serving/
+│       └── app.py
+├── Dockerfile
+├── requirements.txt
+└── .github/workflows/ci.yml
+```
+
+---
+
+## 🚀 Menjalankan Aplikasi
 
 ### 1️⃣ Clone Repository
 
@@ -52,76 +67,68 @@ cd mlops-astra-stock-prediction
 
 ---
 
-### 2️⃣ Setup Environment
+### 2️⃣ Install Dependency
 
-Pastikan Python 3.8+ sudah terinstall.
+Pastikan Python 3.8+ telah terinstal.
 
 ```bash
-python -m venv venv
-source venv/bin/activate  # Windows: venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
 ---
 
-### 3️⃣ Data Ingestion
-
-Mengambil data historis saham Astra (ASII.JK) dari Yahoo Finance:
+### 3️⃣ Menjalankan API FastAPI
 
 ```bash
-python src/data/fetch_data.py
+uvicorn src.serving.app:app --host 0.0.0.0 --port 8080
 ```
 
----
-
-### 4️⃣ Data Preprocessing
-
-```bash
-python src/data/preprocess.py
-```
-
----
-
-### 5️⃣ Training Model
-
-Training model dan pencatatan eksperimen menggunakan MLflow:
-
-```bash
-python src/models/train.py
-```
-
-Menjalankan MLflow UI:
-
-```bash
-mlflow ui
-```
-
----
-
-### 6️⃣ Menjalankan FastAPI
-
-```bash
-uvicorn src.serving.app:app --reload --port 8080
-```
-
-Endpoint prediksi:
+Jika berhasil, API dapat diakses di:
 
 ```http
-POST http://localhost:8080/predict
+http://localhost:8080
 ```
 
 ---
 
-### 7️⃣ Docker
+### 4️⃣ Endpoint Prediksi
 
-Build Docker image:
+```http
+POST /predict
+```
+
+Contoh request:
+
+```json
+{
+  "open": 8000,
+  "high": 8200,
+  "low": 7900,
+  "volume": 1000000
+}
+```
+
+Contoh response:
+
+```json
+{
+  "prediction": [8150.32]
+}
+```
+
+---
+
+## 🐳 Docker
+
+Aplikasi dikemas menggunakan Docker untuk memastikan konsistensi environment.
+
+### Build Image
 
 ```bash
 docker build -t mlops-astra .
 ```
-Model API dikemas menggunakan Docker untuk memastikan konsistensi environment dan kemudahan deployment.
 
-Run container:
+### Run Container
 
 ```bash
 docker run -p 8080:8080 mlops-astra
@@ -129,25 +136,46 @@ docker run -p 8080:8080 mlops-astra
 
 ---
 
-### 8️⃣ Monitoring Model
+## 🔁 CI/CD Pipeline
 
-* Monitoring jumlah request dan latency API
-* Logging performa sistem dan error
-* Metrics diekspos menggunakan Prometheus
+Proyek ini menggunakan **GitHub Actions** untuk mengotomatisasi proses Continuous Integration.
+
+Pipeline dijalankan setiap kali terjadi **push ke repository** dan mencakup tahapan:
+
+* Instalasi dependency
+* Pengujian dasar aplikasi FastAPI
+* Build Docker image
+
+CI/CD memastikan aplikasi selalu berada dalam kondisi siap untuk deployment.
+
+---
+
+## 📊 Monitoring
+
+Monitoring dilakukan melalui **logging pada API FastAPI**, meliputi:
+
+* Pencatatan request yang masuk
+* Logging hasil prediksi
+* Logging error aplikasi
+
+Monitoring ini digunakan untuk memantau aktivitas sistem dan mendeteksi error secara dini.
+Pengembangan lanjutan dapat mencakup integrasi tools seperti Prometheus dan Grafana.
 
 ---
 
 ## 👥 Pembagian Tugas Tim
 
-| Nama   | NIM   | Peran          | Tanggung Jawab                     |
-| ------ | ----- | -------------- | ---------------------------------- |
-| Salwa Farhanatussaidah | 122450011 | Data Engineer  | Data ingestion, preprocessing, DVC |
-| Tria Yunanni | 122450062 | ML Engineer    | Training model, evaluasi, MLflow   |
-| Meira Listyaningrum | 122450055 | MLOps Engineer | API, Docker, deployment            |
-| Chalifia Wananda | 122450076 | DevOps / PM    | CI/CD, monitoring, dokumentasi     |
+| Nama                   | NIM       | Peran          | Tanggung Jawab                   |
+| ---------------------- | --------- | -------------- | -------------------------------- |
+| Salwa Farhanatussaidah | 122450011 | Data Engineer  | Data ingestion, preprocessing    |
+| Tria Yunanni           | 122450062 | ML Engineer    | Training model, evaluasi, MLflow |
+| Meira Listyaningrum    | 122450055 | MLOps Engineer | API, Docker, deployment          |
+| Chalifia Wananda       | 122450076 | DevOps / PM    | CI/CD, monitoring, dokumentasi   |
 
 ---
 
 ## 📜 Lisensi
 
-MIT License
+Proyek ini menggunakan **MIT License**.
+
+---
