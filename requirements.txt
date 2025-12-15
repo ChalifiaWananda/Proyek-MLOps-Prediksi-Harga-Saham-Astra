@@ -1,5 +1,9 @@
 fastapi
 uvicorn
-joblib
+pandas
 numpy
 scikit-learn
+xgboost
+joblib
+yfinance
+pyyaml
