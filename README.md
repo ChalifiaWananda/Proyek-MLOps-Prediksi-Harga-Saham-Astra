@@ -1,39 +1,73 @@
-# 📈 Proyek MLOps: Prediksi Harga Saham 
+# 📈 Proyek MLOps: Prediksi Arah Harga Saham
 
-Selamat datang di **Proyek Prediksi Harga Saham **.
-Proyek ini bertujuan untuk membangun **pipeline MLOps end-to-end** untuk memprediksi harga saham menggunakan data historis.
+Selamat datang di **Proyek MLOps – Prediksi Arah Harga Saham**.
+Proyek ini dibuat untuk menunjukkan implementasi **pipeline MLOps end-to-end** dengan fokus utama pada **operasionalisasi model (deployment, CI/CD, dan monitoring)**, bukan pada kompleksitas pemodelan.
+
+Aplikasi akhir berupa **web app Streamlit** yang dapat memprediksi **arah harga saham (Naik / Turun)** berdasarkan data historis saham.
 
 ---
 
 ## 🎯 Tujuan Proyek
 
-* Menerapkan konsep MLOps dalam deployment model Machine Learning
-* Menyediakan model dalam bentuk REST API menggunakan FastAPI
-* Mengemas aplikasi menggunakan Docker agar environment konsisten
-* Menerapkan CI/CD menggunakan GitHub Actions
-* Memastikan model dapat digunakan kembali secara konsisten (reproducible)
+Tujuan utama proyek ini adalah:
+
+* Menerapkan konsep **MLOps** dalam proyek Machine Learning sederhana
+* Mengintegrasikan proses **training → versioning → deployment** model
+* Menyediakan aplikasi prediksi dalam bentuk **web app (Streamlit)**
+* Mengemas aplikasi menggunakan **Docker** agar environment konsisten
+* Menerapkan **CI/CD menggunakan GitHub Actions**
+* Menjamin aplikasi **reproducible & mudah dijalankan** oleh user lain
+
+Proyek ini dirancang agar **mudah dipahami oleh pemula**, khususnya untuk tugas kelompok mata kuliah MLOps.
 
 ---
 
 ## 🏗️ Arsitektur Sistem
 
 ```
+User (Browser)
+     ↓
+Streamlit Web App
+     ↓
+Load Trained Model
+     ↓
+Prediksi Arah Harga Saham (Up / Down)
+     ↓
+Hasil Ditampilkan ke User
+```
+
+Alur pengembangan model:
+
+```
 Data Historis Saham
         ↓
 Preprocessing Data
         ↓
-Training Model & Tracking (MLflow)
+Feature Engineering
         ↓
-Model Terbaik (best_model.pkl)
+Training Model
         ↓
-API Inference (FastAPI)
+Model Terbaik (model.pkl)
         ↓
-Cloud Deployment
+Deployment (Streamlit + Docker)
         ↓
 CI/CD (GitHub Actions)
-        ↓
-Monitoring & Logging
 ```
+
+---
+
+## 🖥️ Tampilan Aplikasi
+
+Aplikasi dapat diakses melalui browser dan memiliki fitur:
+
+* Input **ticker saham** (contoh: `ASII.JK`)
+* Tombol **Prediksi**
+* Output berupa **arah harga saham (Naik / Turun)**
+
+Judul aplikasi:
+
+> **Prediksi Arah Harga Saham**
+> Model MLOps – Multi-Stock Price Direction Prediction
 
 ---
 
@@ -41,6 +75,7 @@ Monitoring & Logging
 
 ```
 .
+
 ├── data/
 │   └── multistock_tuning_data.csv
 │   └── sample_data.csv
@@ -64,20 +99,20 @@ Monitoring & Logging
 
 ---
 
-## 🚀 Menjalankan Aplikasi
+## 🚀 Menjalankan Aplikasi Secara Lokal
 
 ### 1️⃣ Clone Repository
 
 ```bash
-git clone https://github.com/<username>/mlops-astra-stock-prediction.git
-cd mlops-astra-stock-prediction
+git clone https://github.com/<username>/mlops-stock-direction-prediction.git
+cd mlops-stock-direction-prediction
 ```
 
 ---
 
 ### 2️⃣ Install Dependency
 
-Pastikan Python 3.8+ telah terinstal.
+Pastikan Python **3.8+** sudah terinstal.
 
 ```bash
 pip install -r requirements.txt
@@ -85,100 +120,84 @@ pip install -r requirements.txt
 
 ---
 
-### 3️⃣ Menjalankan API FastAPI
+### 3️⃣ Menjalankan Aplikasi Streamlit
 
 ```bash
-uvicorn src.serving.app:app --host 0.0.0.0 --port 8080
+streamlit run app.py
 ```
 
-Jika berhasil, API dapat diakses di:
+Aplikasi akan berjalan di:
 
 ```http
-http://localhost:8080
+http://localhost:8501
 ```
 
 ---
 
-### 4️⃣ Endpoint Prediksi
+## 🐳 Menjalankan dengan Docker
 
-```http
-POST /predict
-```
-
-Contoh request:
-
-```json
-{
-  "open": 8000,
-  "high": 8200,
-  "low": 7900,
-  "volume": 1000000
-}
-```
-
-Contoh response:
-
-```json
-{
-  "prediction": [8150.32]
-}
-```
-
----
-
-## 🐳 Docker
-
-Aplikasi dikemas menggunakan Docker untuk memastikan konsistensi environment.
-
-### Build Image
+### Build Docker Image
 
 ```bash
-docker build -t mlops-astra .
+docker build -t mlops-stock-app .
 ```
 
 ### Run Container
 
 ```bash
-docker run -p 8080:8080 mlops-astra
+docker run -p 8501:8501 mlops-stock-app
+```
+
+Akses aplikasi di browser:
+
+```http
+http://localhost:8501
 ```
 
 ---
 
 ## 🔁 CI/CD Pipeline
 
-Proyek ini menggunakan **GitHub Actions** untuk mengotomatisasi proses Continuous Integration.
+Proyek ini menggunakan **GitHub Actions** untuk Continuous Integration.
 
-Pipeline dijalankan setiap kali terjadi **push ke repository** dan mencakup tahapan:
+Pipeline dijalankan otomatis setiap kali terjadi **push ke repository**, dengan tahapan:
 
-* Instalasi dependency
-* Pengujian dasar aplikasi FastAPI
+* Checkout source code
+* Install dependency
+* Validasi aplikasi Streamlit
 * Build Docker image
 
-CI/CD memastikan aplikasi selalu berada dalam kondisi siap untuk deployment.
+CI/CD memastikan aplikasi:
+
+* Selalu dalam kondisi siap dijalankan
+* Tidak error akibat dependency
+* Konsisten antar environment
 
 ---
 
-## 📊 Monitoring
+## 📊 Monitoring & Logging
 
-Monitoring dilakukan melalui **logging pada API FastAPI**, meliputi:
+Monitoring dilakukan secara sederhana melalui:
 
-* Pencatatan request yang masuk
-* Logging hasil prediksi
-* Logging error aplikasi
+* Logging proses prediksi
+* Error handling pada aplikasi Streamlit
 
-Monitoring ini digunakan untuk memantau aktivitas sistem dan mendeteksi error secara dini.
-Pengembangan lanjutan dapat mencakup integrasi tools seperti Prometheus dan Grafana.
+Pengembangan lanjutan (future work):
+
+* Integrasi Prometheus & Grafana
+* Logging terpusat
+* Monitoring performa model (data drift)
 
 ---
 
 ## 👥 Pembagian Tugas Tim
 
-| Nama                   | NIM       | Peran          | Tanggung Jawab                   |
-| ---------------------- | --------- | -------------- | -------------------------------- |
-| Salwa Farhanatussaidah | 122450011 | Data Engineer  | Data ingestion, preprocessing    |
-| Tria Yunanni           | 122450062 | ML Engineer    | Training model, evaluasi, MLflow |
-| Meira Listyaningrum    | 122450055 | MLOps Engineer | API, Docker, deployment          |
-| Chalifia Wananda       | 122450076 | DevOps / PM    | CI/CD, monitoring, dokumentasi   |
+| Nama                   | NIM       | Peran          | Tanggung Jawab                             |
+| ---------------------- | --------- | -------------- | ------------------------------------------ |
+| Salwa Farhanatussaidah | 122450011 | Data Engineer  | Data collection, preprocessing             |
+| Tria Yunanni           | 122450062 | ML Engineer    | Training model, evaluasi                   |
+| Meira Listyaningrum    | 122450055 | MLOps Engineer | Streamlit app, Docker, deployment          |
+| Chalifia Wananda       | 122450076 | DevOps / PM    | CI/CD, monitoring, dokumentasi, koordinasi |
 
 ---
 
@@ -187,3 +206,6 @@ Pengembangan lanjutan dapat mencakup integrasi tools seperti Prometheus dan Graf
 Proyek ini menggunakan **MIT License**.
 
 ---
+
+> 📌 **Catatan:**
+> Proyek ini dibuat untuk keperluan **akademik dan pembelajaran MLOps**, bukan sebagai sistem rekomendasi investasi nyata.
