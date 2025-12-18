@@ -206,6 +206,3 @@ Pengembangan lanjutan (future work):
 Proyek ini menggunakan **MIT License**.
 
 ---
-
-> 📌 **Catatan:**
-> Proyek ini dibuat untuk keperluan **akademik dan pembelajaran MLOps**, bukan sebagai sistem rekomendasi investasi nyata.
