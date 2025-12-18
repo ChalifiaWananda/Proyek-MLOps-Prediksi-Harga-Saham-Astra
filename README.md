@@ -14,11 +14,9 @@ Tujuan utama proyek ini adalah:
 * Menerapkan konsep **MLOps** dalam proyek Machine Learning sederhana
 * Mengintegrasikan proses **training → versioning → deployment** model
 * Menyediakan aplikasi prediksi dalam bentuk **web app (Streamlit)**
-* Mengemas aplikasi menggunakan **Docker** agar environment konsisten
 * Menerapkan **CI/CD menggunakan GitHub Actions**
 * Menjamin aplikasi **reproducible & mudah dijalankan** oleh user lain
 
-Proyek ini dirancang agar **mudah dipahami oleh pemula**, khususnya untuk tugas kelompok mata kuliah MLOps.
 
 ---
 
