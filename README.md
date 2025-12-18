@@ -129,7 +129,7 @@ streamlit run app.py
 Aplikasi akan berjalan di:
 
 ```http
-http://localhost:8501
+https://stock-updown-prediction.streamlit.app/
 ```
 
 ---
